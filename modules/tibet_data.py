@@ -4,7 +4,11 @@ CAT Analysis Module for working with TibetSwap data
 
 import pandas as pd
 import requests
+import sys
+import os
 from datetime import datetime, timedelta
+
+sys.path.append(os.path.dirname(__file__))
 from utils import make_url
 
 
@@ -14,7 +18,7 @@ base_url = ANALYTICS_BASE_URL
 
 class Pairs:
     """
-    Handle data about the available asset pairs.
+    Handle data about the available asset pairssys.path.append(os.path.dirname(__file__)).
     
     Assumes each token is paired with XCH.
     """
