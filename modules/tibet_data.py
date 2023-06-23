@@ -47,6 +47,12 @@ class Pairs:
     def get_xch_reserve(self, token):
         return self.get_data_item(field='xch_reserve', name=token).astype('float') / 1e12
     
+    def get_token_reserve(self, token):
+        return self.get_data_item(field='token_reserve', name=token).astype('float') / 1e3
+
+    def get_liquidity(self, token):
+        return self.get_data_item(field='liquidity', name=token).astype('float') / 1e3
+    
     def get_transactions(self, token, lookback=7, op=None, limit=None):
         params = {}
         params['pair_launcher_id'] = self.get_launcher_id(token)
@@ -92,6 +98,12 @@ class Pair:
     def get_xch_reserve(self):
         return self.pairs.get_xch_reserve(self.token)
 
+    def get_token_reserve(self):
+        return self.pairs.get_token_reserve(self.token)
+
+    def get_liquidity(self):
+        return self.pairs.get_liquidity(self.token)
+
     def get_periodic_yield(self, lookback=7):
         return self.get_volume(lookback) * 0.0035 / self.get_xch_reserve()
     
@@ -104,3 +116,14 @@ class Pair:
     def get_recovery_period(self, size=1, unit=7):
         return (2 * size / self.get_xch_reserve()) / self.get_periodic_yield(lookback=unit)
 
+    def get_neutral_price(self):
+        if self.token == 'USDS':
+            return self.get_token_reserve/self.get_xch_reserve()
+        else:
+            return self.get_xch_reserve()/self.get_token_reserve()
+
+    def get_inverse_price(self):
+        return 1. / self.get_neutral_price()
+
+    def get_xch_value_of_liquidity_units(self, n=1):
+        return 2. * n * self.get_xch_reserve() / self.get_liquidity()
