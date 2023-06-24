@@ -118,12 +118,19 @@ class Pair:
 
     def get_neutral_price(self):
         if self.token == 'USDS':
-            return self.get_token_reserve/self.get_xch_reserve()
+            return self.get_token_reserve()/self.get_xch_reserve()
         else:
             return self.get_xch_reserve()/self.get_token_reserve()
 
     def get_inverse_price(self):
         return 1. / self.get_neutral_price()
 
-    def get_xch_value_of_liquidity_units(self, n=1):
-        return 2. * n * self.get_xch_reserve() / self.get_liquidity()
+    def get_total_xch_value_of_liquidity_units(self, n=1):
+        return 2. * self.get_raw_xch_value_of_liquidity_units(n)
+        
+    def get_raw_xch_value_of_liquidity_units(self, n=1):
+        return n * self.get_xch_reserve() / self.get_liquidity()
+    
+    def get_raw_token_value_of_liquidity_units(self, n=1):
+        return n * self.get_token_reserve() / self.get_liquidity()
+
