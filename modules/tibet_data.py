@@ -6,6 +6,7 @@ import pandas as pd
 import requests
 import sys
 import os
+from math import nan
 from datetime import datetime, timedelta
 
 sys.path.append(os.path.dirname(__file__))
@@ -13,6 +14,8 @@ from utils import make_url
 
 
 ANALYTICS_BASE_URL = "https://api.info.v2.tibetswap.io/"
+LIQ_FEE = 0.007
+
 
 base_url = ANALYTICS_BASE_URL
 
@@ -105,7 +108,8 @@ class Pair:
         return self.pairs.get_liquidity(self.token)
 
     def get_periodic_yield(self, lookback=7):
-        return self.get_volume(lookback) * 0.0035 / self.get_xch_reserve()
+        reserve = self.get_xch_reserve()
+        return nan if not reserve else self.get_volume(lookback) * 0.5 * LIQ_FEE / reserve
     
     def get_annualized_yield(self, lookback=7):
         return (1 + self.get_periodic_yield(lookback)) ** (365.25 / lookback) - 1
